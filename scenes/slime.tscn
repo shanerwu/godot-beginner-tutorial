@@ -1,8 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://bmhj4ljfyakks"]
+[gd_scene load_steps=13 format=3 uid="uid://bmhj4ljfyakks"]
 
 [ext_resource type="Script" uid="uid://dkxa5bnge0oje" path="res://scripts/slime.gd" id="1_n6pvg"]
 [ext_resource type="Texture2D" uid="uid://cbajmv7g8h14n" path="res://assets/sprites/slime_green.png" id="1_p2gj0"]
 [ext_resource type="PackedScene" uid="uid://gv0fv7i1xfn2" path="res://scenes/killzone.tscn" id="2_n6pvg"]
+[ext_resource type="PackedScene" uid="uid://dn0n331lxgedg" path="res://scenes/stomp_detector.tscn" id="4_pjw23"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v5wyi"]
+atlas = ExtResource("1_p2gj0")
+region = Rect2(48, 48, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pjw23"]
 atlas = ExtResource("1_p2gj0")
@@ -24,6 +29,14 @@ region = Rect2(72, 24, 24, 24)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_v5wyi")
+}],
+"loop": true,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_pjw23")
 }, {
 "duration": 1.0,
@@ -41,7 +54,10 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0l8pv"]
-size = Vector2(10, 14)
+size = Vector2(10, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2npkn"]
+size = Vector2(13, 4.5)
 
 [node name="Slime" type="Node2D"]
 script = ExtResource("1_n6pvg")
@@ -50,13 +66,13 @@ script = ExtResource("1_n6pvg")
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_v5wyi")
 autoplay = "default"
-frame = 2
-frame_progress = 0.09999792
+frame = 3
+frame_progress = 0.017653849
 
 [node name="Killzone" parent="." instance=ExtResource("2_n6pvg")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Killzone"]
-position = Vector2(0, -7)
+position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_0l8pv")
 
 [node name="RayCastRight" type="RayCast2D" parent="."]
@@ -66,3 +82,11 @@ target_position = Vector2(10, 0)
 [node name="RayCastLeft" type="RayCast2D" parent="."]
 position = Vector2(0, -7)
 target_position = Vector2(-10, 0)
+
+[node name="StompDetector" parent="." instance=ExtResource("4_pjw23")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StompDetector"]
+position = Vector2(0, -15)
+shape = SubResource("RectangleShape2D_2npkn")
+
+[connection signal="stomped" from="StompDetector" to="." method="_on_stomp_detector_stomped"]
